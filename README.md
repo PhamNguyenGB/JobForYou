@@ -31,6 +31,5 @@ Tech Stack
    npm run dev
 
 5. MySQL:
-   cd server
+   cd server,
    npx sequelize-cli db:migrate,
-   npx sequelize-cli db:seed:all
