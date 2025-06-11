@@ -7,7 +7,7 @@ Tech Stack
   Authentication: JWT (có refresh token)
 
 1. Install dependencies
-   cd backend
+   cd server
    npm install
 
 2. .env
@@ -23,3 +23,14 @@ Tech Stack
 
 3. Run development server
    npm run dev
+
+
+4. Frontend
+   cd client
+   npm install
+   npm run dev
+
+5. MySQL
+   cd server
+   npx sequelize-cli db:migrate
+   npx sequelize-cli db:seed:all
