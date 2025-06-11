@@ -8,7 +8,7 @@ Tech Stack
 
 1. Install dependencies
    cd backend
-   pm install
+   npm install
 
 2. .env
    DB_HOST=localhost
