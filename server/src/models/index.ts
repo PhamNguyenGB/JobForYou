@@ -1,59 +1,59 @@
-// models/index.ts
-import User from "./user.model";
-// Import thêm models khác khi tạo
-// import Product from './product.model';
-// import Category from './category.model';
-// import Order from './order.model';
+import fs from "fs";
+import path from "path";
+import { Sequelize, DataTypes } from "sequelize";
+import process from "process";
 
-// Khởi tạo database connection và sync models
-import sequelize from "../config/database";
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || "development";
+const config = require(path.join(__dirname, "/../config/config.json"))[env];
 
-// Test connection
-const testConnection = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Database connection established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to database:", error);
+const db: any = {};
+
+let sequelize: Sequelize;
+
+if (config.use_env_variable) {
+  sequelize = new Sequelize(
+    process.env[config.use_env_variable] as string,
+    config
+  );
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
+}
+
+// Read all model files and initialize them
+fs.readdirSync(__dirname)
+  .filter((file: string) => {
+    return (
+      file.indexOf(".") !== 0 &&
+      file !== basename &&
+      (file.slice(-3) === ".ts" || file.slice(-3) === ".js") &&
+      file.indexOf(".test.") === -1
+    );
+  })
+  .forEach((file: string) => {
+    const modelPath = path.join(__dirname, file);
+    const modelModule = require(modelPath);
+
+    // Handle both default export and named export
+    const modelInitializer = modelModule.default || modelModule;
+    const model = modelInitializer(sequelize, DataTypes);
+
+    db[model.name] = model;
+  });
+
+// Set up associations
+Object.keys(db).forEach((modelName: string) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
   }
-};
+});
 
-// Sync models với database
-const syncModels = async () => {
-  try {
-    await sequelize.sync({ force: false }); // force: true sẽ drop tables
-    console.log("All models synced successfully.");
-  } catch (error) {
-    console.error("Error syncing models:", error);
-  }
-};
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-// Định nghĩa relationships/associations ở đây (nếu có)
-// Ví dụ:
-// User.hasMany(Order, { foreignKey: 'userId', as: 'orders' });
-// Order.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-
-// Product.belongsTo(Category, { foreignKey: 'categoryId', as: 'category' });
-// Category.hasMany(Product, { foreignKey: 'categoryId', as: 'products' });
-
-// Export models
-export {
-  User,
-  // Product,
-  // Category,
-  // Order,
-};
-
-// Export utility functions
-export { sequelize, testConnection, syncModels };
-
-// Export default object nếu muốn
-export default {
-  User,
-  // Product,
-  // Category,
-  // Order,
-  sequelize,
-  testConnection,
-  syncModels,
-};
+export default db;

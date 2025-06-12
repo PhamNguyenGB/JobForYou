@@ -1,14 +1,23 @@
 import { Sequelize } from "sequelize";
-import dbConfig from "./db.config";
+import config from "./db.config";
 
 const sequelize = new Sequelize(
-  dbConfig.DB!,
-  dbConfig.USER!,
-  dbConfig.PASSWORD!,
+  config.DB_NAME,
+  config.DB_USER,
+  config.DB_PASSWORD,
   {
-    host: dbConfig.HOST,
+    host: config.DB_HOST,
     dialect: "mysql",
   }
 );
 
-export default sequelize;
+const connection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.log("Unable to connect to the database:", error);
+  }
+};
+
+export default connection;

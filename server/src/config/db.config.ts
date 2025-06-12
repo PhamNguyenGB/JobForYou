@@ -1,22 +1,15 @@
+// config/db.ts
+import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-if (
-  !process.env.DB_HOST ||
-  !process.env.DB_USER ||
-  !process.env.DB_PASSWORD ||
-  !process.env.DB_NAME ||
-  !process.env.DB_PORT
-) {
-  throw new Error("Missing environment variables for database config");
-}
-
-export default {
-  HOST: process.env.DB_HOST,
-  USER: process.env.DB_USER,
-  PASSWORD: process.env.DB_PASSWORD,
-  DB: process.env.DB_NAME,
-  dialect: "mysql" as const,
-  PORT: Number(process.env.DB_PORT),
+const config = {
+  DB_NAME: process.env.DB_NAME || "db_name",
+  DB_USER: process.env.DB_USER || "db_user",
+  DB_PASSWORD: process.env.DB_PASSWORD || "db_password",
+  DB_HOST: process.env.DB_HOST || "localhost",
+  DB_PORT: parseInt(process.env.DB_PORT || "3306"),
 };
+
+export default config;
