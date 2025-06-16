@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "db:sync": "ts-node -e \"require('./src/config/database').default.sync({force: true})\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/app.js",
+    "db:create": "sequelize-cli db:create",
+    "db:migrate": "sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,8 @@
     "mysql2": "^3.14.1",
     "nodemon": "^3.1.10",
     "path": "^0.12.7",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "sequelize-cli": "^6.6.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -32,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.31",
     "@types/sequelize": "^4.28.20",
+    "dotenv-cli": "^8.0.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"

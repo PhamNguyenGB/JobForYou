@@ -83,7 +83,7 @@ export default (sequelize: Sequelize) => {
         },
       },
       role: {
-        type: DataTypes.ENUM("user", "admin", "moderator"),
+        type: DataTypes.ENUM("user", "employer"),
         allowNull: true,
         defaultValue: "user",
       },

@@ -1,59 +1,69 @@
-import fs from "fs";
-import path from "path";
-import { Sequelize, DataTypes } from "sequelize";
-import process from "process";
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+dotenv.config();
 
-const basename = path.basename(__filename);
+import userModel from "./user.model";
+import adminModel from "./admin.model";
+import applicationModel from "./application.model";
+import companyModel from "./company.model";
+import districtModel from "./district.model";
+import jobCategoryModel from "./jobCategory.model";
+import jobPostDistrictModel from "./jobPostDistrict.model";
+import jobPostModel from "./jobPost.model";
+import jobPostLevelModel from "./jobPostLevel.model";
+import levelModel from "./level.model";
+import savedJobModel from "./savedJob.model";
+import profileModel from "./profile.model";
+import provinceModel from "./province.model";
+import tokenModel from "./token.model";
+
+const config = require("../config/config.js");
+
 const env = process.env.NODE_ENV || "development";
-const config = require(path.join(__dirname, "/../config/config.json"))[env];
+const dbConfig = config[env];
 
-const db: any = {};
-
-let sequelize: Sequelize;
-
-if (config.use_env_variable) {
-  sequelize = new Sequelize(
-    process.env[config.use_env_variable] as string,
-    config
-  );
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
-
-// Read all model files and initialize them
-fs.readdirSync(__dirname)
-  .filter((file: string) => {
-    return (
-      file.indexOf(".") !== 0 &&
-      file !== basename &&
-      (file.slice(-3) === ".ts" || file.slice(-3) === ".js") &&
-      file.indexOf(".test.") === -1
-    );
-  })
-  .forEach((file: string) => {
-    const modelPath = path.join(__dirname, file);
-    const modelModule = require(modelPath);
-
-    // Handle both default export and named export
-    const modelInitializer = modelModule.default || modelModule;
-    const model = modelInitializer(sequelize, DataTypes);
-
-    db[model.name] = model;
-  });
-
-// Set up associations
-Object.keys(db).forEach((modelName: string) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+const sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
+  {
+    host: dbConfig.host,
+    port: dbConfig.port,
+    dialect: dbConfig.dialect,
+    logging: false,
   }
-});
+);
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+const User = userModel(sequelize);
+const Admin = adminModel(sequelize);
+const Application = applicationModel(sequelize);
+const Company = companyModel(sequelize);
+const District = districtModel(sequelize);
+const JobCategory = jobCategoryModel(sequelize);
+const JobPostDistrict = jobPostDistrictModel(sequelize);
+const JobPost = jobPostModel(sequelize);
+const JobPostLevel = jobPostLevelModel(sequelize);
+const Level = levelModel(sequelize);
+const SavedJob = savedJobModel(sequelize);
+const Profile = profileModel(sequelize);
+const Province = provinceModel(sequelize);
+const Token = tokenModel(sequelize);
 
-export default db;
+export {
+  User,
+  Admin,
+  Application,
+  Company,
+  District,
+  JobCategory,
+  JobPostDistrict,
+  JobPost,
+  JobPostLevel,
+  Level,
+  SavedJob,
+  Profile,
+  Province,
+  Token,
+};
+
+export default sequelize;

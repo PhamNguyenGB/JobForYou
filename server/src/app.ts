@@ -1,17 +1,21 @@
 import express from "express";
-import cors from "cors";
-import sequelize from "./config/db.config";
+import sequelize from "./models";
+import routes from "./routes";
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Server is running!",
-    timestamp: new Date().toISOString(),
+// app.get("/users", async (req, res) => {
+//   const users = await User.findAll();
+//   res.json(users);
+// });
+
+routes(app);
+
+sequelize.sync().then(() => {
+  app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
   });
 });
-
-export default app;
