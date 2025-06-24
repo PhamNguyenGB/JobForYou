@@ -30,17 +30,12 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      token: {
+      refresh_token: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       type: {
-        type: Sequelize.ENUM(
-          "access",
-          "refresh",
-          "reset_password",
-          "verify_email"
-        ),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       expires_at: {

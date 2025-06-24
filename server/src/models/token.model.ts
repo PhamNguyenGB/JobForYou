@@ -6,6 +6,7 @@ interface TokenAttributes {
   user_id?: number;
   admin_id?: number;
   refresh_token: string;
+  type: string;
   is_revoked: boolean;
   expires_at: Date;
   createdAt?: Date;
@@ -25,6 +26,7 @@ class Token
   public user_id?: number;
   public admin_id?: number;
   public refresh_token!: string;
+  public type!: string;
   public expires_at!: Date;
   public is_revoked!: boolean;
 
@@ -68,6 +70,10 @@ export default (sequelize: Sequelize) => {
       },
       refresh_token: {
         type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      type: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       is_revoked: {
