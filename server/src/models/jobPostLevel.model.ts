@@ -31,7 +31,7 @@ class JobPostLevel
     JobPostLevel.belongsTo(models.JobPost, {
       foreignKey: "job_post_id",
     });
-    JobPostLevel.belongsTo(models.Skill, {
+    JobPostLevel.belongsTo(models.Level, {
       foreignKey: "level_id",
     });
   }

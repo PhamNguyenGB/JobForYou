@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 
 module.exports = {
-  async up (queryInterface , Sequelize)  {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable("companies", {
       id: {
         allowNull: false,
@@ -37,9 +37,9 @@ module.exports = {
       },
       admin_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
-          model: "users",
+          model: "admins",
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -60,7 +60,7 @@ module.exports = {
     await queryInterface.addIndex("companies", ["admin_id"]);
   },
 
-  async down (queryInterface, Sequelize ) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("companies");
   },
 };

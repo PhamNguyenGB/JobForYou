@@ -1,4 +1,4 @@
-import { User, Token, Admin } from "../models";
+import models from "../models";
 import bcrypt from "bcryptjs";
 import {
   generateAccessToken,
@@ -38,7 +38,7 @@ const funHashPassWord = (password: string) => {
 const checkEmail = async (email: string) => {
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
   if (emailReg.test(String(email).toLowerCase()) === true) {
-    let user = await User.findOne({
+    let user = await models.User.findOne({
       where: { email: email },
     });
     if (user) {
@@ -59,7 +59,7 @@ export const registerAdmin = async (payload: AdminAttributes) => {
       return;
     }
     let hashPass = await funHashPassWord(payload.password);
-    const admin = await Admin.create({ ...payload, password: hashPass });
+    const admin = await models.Admin.create({ ...payload, password: hashPass });
     return admin;
   } catch (error) {
     console.log(error);
@@ -69,7 +69,7 @@ export const registerAdmin = async (payload: AdminAttributes) => {
 
 export const loginAdmin = async (email: string, password: string) => {
   try {
-    const admin = await Admin.findOne({
+    const admin = await models.Admin.findOne({
       where: { email: email },
     });
     if (admin) {
@@ -107,7 +107,10 @@ export const loginAdmin = async (email: string, password: string) => {
 
 export const logoutAdmin = async (refresh_token: string) => {
   try {
-    await Token.update({ is_revoked: true }, { where: { refresh_token } });
+    await models.Token.update(
+      { is_revoked: true },
+      { where: { refresh_token } }
+    );
     return "logout success";
   } catch (error) {
     console.log(error);

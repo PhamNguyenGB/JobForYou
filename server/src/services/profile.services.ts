@@ -1,5 +1,4 @@
-import { profile } from "console";
-import { Profile } from "../models";
+import models from "../models";
 
 interface ProfileAttributes {
   id: number;
@@ -11,7 +10,7 @@ interface ProfileAttributes {
 
 export const createProfile = async (payload: ProfileAttributes) => {
   try {
-    const profile = await Profile.create(payload);
+    const profile = await models.Profile.create(payload);
     return profile;
   } catch (error) {
     console.log(error);
@@ -21,7 +20,7 @@ export const createProfile = async (payload: ProfileAttributes) => {
 
 export const getProfile = async (profileId: number) => {
   try {
-    const profile = await Profile.findOne({ where: { id: profileId } });
+    const profile = await models.Profile.findOne({ where: { id: profileId } });
     if (profile) {
       return profile;
     }
@@ -34,7 +33,7 @@ export const getProfile = async (profileId: number) => {
 
 export const updateProfile = async (payload: ProfileAttributes) => {
   try {
-    const existingProfile = await Profile.findOne({
+    const existingProfile = await models.Profile.findOne({
       where: { id: payload.id },
     });
 

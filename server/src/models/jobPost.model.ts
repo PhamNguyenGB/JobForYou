@@ -62,6 +62,7 @@ class JobPost
       foreignKey: "job_post_id",
       otherKey: "district_id",
     });
+    JobPost.belongsTo(models.User, { foreignKey: "user_id" });
   }
 }
 

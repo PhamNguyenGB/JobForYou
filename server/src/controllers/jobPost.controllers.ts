@@ -5,8 +5,10 @@ export const createJobPost = async (req: Request, res: Response) => {
   try {
     const payload = {
       ...req.body,
+      deadline: new Date(req.body.deadline),
       user_id: res.locals.user.id,
     };
+
     const jobPost = await jobPostServices.createJobPost(payload);
     res.status(200).json(jobPost);
     return;
@@ -19,6 +21,8 @@ export const createJobPost = async (req: Request, res: Response) => {
 
 export const getJobPosts = async (req: Request, res: Response) => {
   try {
+    console.log("chẹch", req.params);
+
     const page = req.params.page ? Number(req.params.page) : 1;
     const limit = req.params.limit ? Number(req.params.limit) : 10;
     const jobPosts = await jobPostServices.getJobPost(page, limit);

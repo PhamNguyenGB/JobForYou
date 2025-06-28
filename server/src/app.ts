@@ -1,5 +1,5 @@
 import express from "express";
-import sequelize from "./models";
+import { sequelize } from "./models";
 import routes from "./routes";
 
 const app = express();

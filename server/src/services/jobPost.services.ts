@@ -1,4 +1,4 @@
-import { Company, JobPost, User } from "../models";
+import models from "../models";
 
 interface JobPostAttributes {
   id?: number;
@@ -18,7 +18,7 @@ interface JobPostAttributes {
 
 export const createJobPost = async (payload: JobPostAttributes) => {
   try {
-    const jobPost = await JobPost.create({
+    const jobPost = await models.JobPost.create({
       ...payload,
       status: "published",
     });
@@ -32,10 +32,10 @@ export const createJobPost = async (payload: JobPostAttributes) => {
 export const getJobPost = async (page: number, limit: number) => {
   try {
     let offset = (page - 1) * limit;
-    const jobPosts = await JobPost.findAll({
+    const jobPosts = await models.JobPost.findAll({
       offset: offset,
       limit: limit,
-      include: [{ model: Company }, { model: User }],
+      include: [{ model: models.Company }, { model: models.User }],
     });
     return jobPosts;
   } catch (error) {
@@ -46,9 +46,9 @@ export const getJobPost = async (page: number, limit: number) => {
 
 export const getJobPostById = async (jobPostId: number) => {
   try {
-    const jobPost = await JobPost.findOne({
+    const jobPost = await models.JobPost.findOne({
       where: { id: jobPostId },
-      include: [{ model: Company }, { model: User }],
+      include: [{ model: models.Company }, { model: models.User }],
     });
     return jobPost;
   } catch (error) {
@@ -62,7 +62,7 @@ export const updateJobPost = async (
   payload: JobPostAttributes
 ) => {
   try {
-    const jobPost = await JobPost.findOne({ where: { id: jobPostId } });
+    const jobPost = await models.JobPost.findOne({ where: { id: jobPostId } });
     if (jobPost) {
       const jobPostUpdate = await jobPost.update({
         title: payload.title ? payload.title : jobPost.title,
@@ -88,7 +88,7 @@ export const updateJobPost = async (
 
 export const deleteJobPost = async (jobPostId: number, userId: number) => {
   try {
-    const jobPost = await JobPost.findOne({ where: { id: jobPostId } });
+    const jobPost = await models.JobPost.findOne({ where: { id: jobPostId } });
     if (jobPost) {
       if (jobPost.user_id === userId) {
         const jobPostDelete = await jobPost.destroy();

@@ -1,14 +1,25 @@
 import * as jobPostControllers from "../controllers/jobPost.controllers";
 import express, { Express } from "express";
+import {
+  authenticateToken,
+  authorizeRoles,
+} from "../middlewares/auth.middlewares";
 
 const router = express.Router();
 
 const JobPostRoute = (app: Express) => {
-  router.get("/job-posts", jobPostControllers.getJobPosts);
-  router.get("/job-post/:id", jobPostControllers.getJobPostById);
-  router.post("/create-job-post", jobPostControllers.createJobPost);
-  router.put("/update-job-post/:id", jobPostControllers.updateJobPost);
-  router.delete("/delete-job-post/:id", jobPostControllers.deleteJobPost);
+  router.get("/all/:page/:limit", jobPostControllers.getJobPosts);
+  router.get("/:id", jobPostControllers.getJobPostById);
+  router.post(
+    "/create",
+    authenticateToken,
+    authorizeRoles("employer"),
+    jobPostControllers.createJobPost
+  );
+  router.put("/update/:id", jobPostControllers.updateJobPost);
+  router.delete("/delete/:id", jobPostControllers.deleteJobPost);
 
   return app.use("/api/job-posts", router);
 };
+
+export default JobPostRoute;

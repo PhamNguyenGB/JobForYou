@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import axios from "axios";
 dotenv.config();
 
 import userModel from "./user.model";
@@ -22,7 +23,7 @@ const config = require("../config/config.js");
 const env = process.env.NODE_ENV || "development";
 const dbConfig = config[env];
 
-const sequelize = new Sequelize(
+export const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,
   dbConfig.password,
@@ -49,7 +50,7 @@ const Profile = profileModel(sequelize);
 const Province = provinceModel(sequelize);
 const Token = tokenModel(sequelize);
 
-export {
+const models = {
   User,
   Admin,
   Application,
@@ -66,4 +67,10 @@ export {
   Token,
 };
 
-export default sequelize;
+Object.values(models).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(models);
+  }
+});
+
+export default models;
