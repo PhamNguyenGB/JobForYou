@@ -6,16 +6,11 @@ import {
   createToken,
 } from "./auth.services";
 import { funHashPassWord, funComparePassWord } from "../utils/bcrypt.util";
-
-interface AdminAttributes {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  role?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import {
+  AdminAttributes,
+  CreateAdminPayload,
+  UpdateAdminPayload,
+} from "../types/admin.type";
 
 interface TokenAttributes {
   id?: number;
@@ -29,30 +24,30 @@ interface TokenAttributes {
   updatedAt?: Date;
 }
 
-const checkEmail = async (email: string) => {
-  const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  if (emailReg.test(String(email).toLowerCase()) === true) {
-    let user = await models.UserModel.findOne({
-      where: { email: email },
-    });
-    if (user) {
-      return "email is exist";
-    }
-    return true;
-  }
+// const checkEmail = async (email: string) => {
+//   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+//   if (emailReg.test(String(email).toLowerCase()) === true) {
+//     let user = await models.UserModel.findOne({
+//       where: { email: email },
+//     });
+//     if (user) {
+//       return "email is exist";
+//     }
+//     return true;
+//   }
 
-  return "email is not valid";
-};
+//   return "email is not valid";
+// };
 
 export class AdminService {
-  async registerAdmin(payload: AdminAttributes) {
+  async registerAdmin(payload: CreateAdminPayload) {
     try {
-      let email = await checkEmail(payload.email);
+      // let email = await checkEmail(payload.email);
 
-      if (email !== true) {
-        console.log(email);
-        return;
-      }
+      // if (email !== true) {
+      //   console.log(email);
+      //   return;
+      // }
       let hashPass = await funHashPassWord(payload.password);
       const admin = await adminRepo.createAdmin({
         ...payload,

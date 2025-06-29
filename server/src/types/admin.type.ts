@@ -1,4 +1,4 @@
-export interface createAdminPayload {
+export interface CreateAdminPayload {
   id?: number;
   name: string;
   email: string;
@@ -7,7 +7,7 @@ export interface createAdminPayload {
   updatedAt?: Date;
 }
 
-export interface updateAdminPayload {
+export interface UpdateAdminPayload {
   name?: string;
   email?: string;
   password?: string;
@@ -16,11 +16,11 @@ export interface updateAdminPayload {
 }
 
 export interface AdminAttributes {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password: string;
-  role: string;
+  role?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

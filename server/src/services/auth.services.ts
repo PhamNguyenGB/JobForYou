@@ -1,6 +1,7 @@
 import models from "../models";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { AdminAttributes } from "../types/admin.type";
 
 require("dotenv").config();
 
@@ -23,15 +24,6 @@ interface TokenAttributes {
   type: string;
   is_revoked: boolean;
   expires_at: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface AdminAttributes {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

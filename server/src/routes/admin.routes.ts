@@ -9,7 +9,11 @@ import { validate } from "../middlewares/validateSchema.middleware";
 const router = express.Router();
 
 const AdminRoute = (app: Express) => {
-  router.post("/register", adminController.register);
+  router.post(
+    "/register",
+    validate(createAdminSchema),
+    adminController.register
+  );
   router.post("/login", validate(loginAdminSchema), adminController.login);
   router.post("/logout", adminController.logout);
 
