@@ -6,7 +6,7 @@ export const createJobPostLevel = async (
 ) => {
   try {
     for (let i = 0; i < levelId.length; i++) {
-      await models.JobPostLevel.create({
+      await models.JobPostLevelModel.create({
         job_post_id: jobPostId,
         level_id: levelId[i],
       });
@@ -25,11 +25,11 @@ export const deleteJobPostLevel = async (
 ) => {
   try {
     for (let i = 0; i < levelId.length; i++) {
-      await models.JobPostLevel.destroy({
+      await models.JobPostLevelModel.destroy({
         where: { job_post_id: jobPostId, level_id: levelId[i] },
       });
     }
-    await models.JobPostLevel.destroy({
+    await models.JobPostLevelModel.destroy({
       where: { job_post_id: jobPostId, level_id: levelId },
     });
     return "JobPostLevel deleted successfully";

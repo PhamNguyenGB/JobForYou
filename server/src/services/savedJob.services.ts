@@ -6,7 +6,10 @@ interface SavedJobAttributes {
 }
 export const createSavedJob = async (user_id: number, job_post_id: number) => {
   try {
-    const savedJob = await models.SavedJob.create({ user_id, job_post_id });
+    const savedJob = await models.SavedJobModel.create({
+      user_id,
+      job_post_id,
+    });
     return savedJob;
   } catch (error) {
     console.log(error);
@@ -16,7 +19,7 @@ export const createSavedJob = async (user_id: number, job_post_id: number) => {
 
 export const deleteSavedJob = async (user_id: number, job_post_id: number) => {
   try {
-    await models.SavedJob.destroy({
+    await models.SavedJobModel.destroy({
       where: { user_id, job_post_id },
     });
     return "SavedJob deleted successfully";
@@ -28,7 +31,7 @@ export const deleteSavedJob = async (user_id: number, job_post_id: number) => {
 
 export const getSavedJob = async (user_id: number) => {
   try {
-    const savedJob = await models.SavedJob.findAll({ where: { user_id } });
+    const savedJob = await models.SavedJobModel.findAll({ where: { user_id } });
     return savedJob;
   } catch (error) {
     console.log(error);

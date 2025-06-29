@@ -37,7 +37,7 @@ class User
     // Example associations:
     // User.hasMany(models.Post, { foreignKey: 'userId' });
     // User.belongsTo(models.Company, { foreignKey: 'companyId' });
-    User.hasMany(models.JobPost, { foreignKey: "user_id" });
+    User.hasMany(models.JobPostModel, { foreignKey: "user_id" });
   }
 }
 

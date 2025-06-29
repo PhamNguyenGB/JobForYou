@@ -10,7 +10,7 @@ interface JobCategoryAttributes {
 
 export const getAllJobCategories = async () => {
   try {
-    const jobCategories = await models.JobCategory.findAll();
+    const jobCategories = await models.JobCategoryModel.findAll();
     return jobCategories;
   } catch (error) {
     console.log(error);
@@ -20,7 +20,7 @@ export const getAllJobCategories = async () => {
 
 export const getJobCategoryById = async (id: number) => {
   try {
-    const jobCategory = await models.JobCategory.findByPk(id);
+    const jobCategory = await models.JobCategoryModel.findByPk(id);
     return jobCategory;
   } catch (error) {
     console.log(error);
@@ -30,7 +30,10 @@ export const getJobCategoryById = async (id: number) => {
 
 export const createJobCategory = async (name: string, description?: string) => {
   try {
-    const jobCategory = await models.JobCategory.create({ name, description });
+    const jobCategory = await models.JobCategoryModel.create({
+      name,
+      description,
+    });
     return jobCategory;
   } catch (error) {
     console.log(error);
@@ -40,7 +43,9 @@ export const createJobCategory = async (name: string, description?: string) => {
 
 export const deleteJobCategory = async (id: number) => {
   try {
-    const jobCategory = await models.JobCategory.destroy({ where: { id } });
+    const jobCategory = await models.JobCategoryModel.destroy({
+      where: { id },
+    });
     return jobCategory;
   } catch (error) {
     console.log(error);

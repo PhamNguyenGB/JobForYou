@@ -28,11 +28,11 @@ class SavedJob
 
   // Define associations
   public static associate(models: any) {
-    SavedJob.belongsTo(models.User, {
+    SavedJob.belongsTo(models.UserModel, {
       foreignKey: "user_id",
       as: "user",
     });
-    SavedJob.belongsTo(models.JobPost, {
+    SavedJob.belongsTo(models.JobPostModel, {
       foreignKey: "job_post_id",
       as: "jobPost",
     });

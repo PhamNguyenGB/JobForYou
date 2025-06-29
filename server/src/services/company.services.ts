@@ -14,7 +14,7 @@ export const createCompany = async (companyData: CompanyAttributes) => {
   try {
     console.log("check company data", companyData);
 
-    const company = await models.Company.create(companyData);
+    const company = await models.CompanyModel.create(companyData);
     return company;
   } catch (error) {
     console.error("Error creating company:", error);
@@ -24,7 +24,7 @@ export const createCompany = async (companyData: CompanyAttributes) => {
 
 export const getCompanyById = async (companyId: number) => {
   try {
-    const company = await models.Company.findByPk(companyId);
+    const company = await models.CompanyModel.findByPk(companyId);
     return company;
   } catch (error) {
     console.error("Error getting company:", error);
@@ -34,7 +34,7 @@ export const getCompanyById = async (companyId: number) => {
 
 export const getAllCompanies = async () => {
   try {
-    const companies = await models.Company.findAll();
+    const companies = await models.CompanyModel.findAll();
     return companies;
   } catch (error) {
     console.error("Error getting all companies:", error);
@@ -49,7 +49,9 @@ export const updateCompany = async (
   try {
     console.log("check company data", companyData, companyId);
 
-    const company = await models.Company.findOne({ where: { id: companyId } });
+    const company = await models.CompanyModel.findOne({
+      where: { id: companyId },
+    });
     console.log("check company", company);
 
     if (!company) {
@@ -76,7 +78,7 @@ export const updateCompany = async (
 
 export const deleteCompany = async (companyId: number) => {
   try {
-    const company = await models.Company.findByPk(companyId);
+    const company = await models.CompanyModel.findByPk(companyId);
     if (!company) {
       throw new Error("Company not found");
     }

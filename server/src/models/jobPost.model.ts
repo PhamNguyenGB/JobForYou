@@ -48,21 +48,21 @@ class JobPost
 
   // Define associations
   public static associate(models: any) {
-    JobPost.belongsTo(models.Company, { foreignKey: "company_id" });
-    JobPost.belongsTo(models.JobCategory, { foreignKey: "category_id" });
-    JobPost.belongsToMany(models.Level, {
-      through: models.JobPostLevel,
+    JobPost.belongsTo(models.CompanyModel, { foreignKey: "company_id" });
+    JobPost.belongsTo(models.JobCategoryModel, { foreignKey: "category_id" });
+    JobPost.belongsToMany(models.LevelModel, {
+      through: models.JobPostLevelModel,
       foreignKey: "job_post_id",
       otherKey: "level_id",
     });
-    JobPost.hasMany(models.Application, { foreignKey: "job_post_id" });
-    JobPost.hasOne(models.SavedJob, { foreignKey: "job_post_id" });
-    JobPost.belongsToMany(models.District, {
-      through: models.JobPostDistrict,
+    JobPost.hasMany(models.ApplicationModel, { foreignKey: "job_post_id" });
+    JobPost.hasOne(models.SavedJobModel, { foreignKey: "job_post_id" });
+    JobPost.belongsToMany(models.DistrictModel, {
+      through: models.JobPostDistrictModel,
       foreignKey: "job_post_id",
       otherKey: "district_id",
     });
-    JobPost.belongsTo(models.User, { foreignKey: "user_id" });
+    JobPost.belongsTo(models.UserModel, { foreignKey: "user_id" });
   }
 }
 

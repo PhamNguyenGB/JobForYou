@@ -34,8 +34,8 @@ class Application
 
   // Define associations
   public static associate(models: any) {
-    Application.belongsTo(models.User, { foreignKey: "user_id" });
-    Application.belongsTo(models.JobPost, { foreignKey: "job_post_id" });
+    Application.belongsTo(models.UserModel, { foreignKey: "user_id" });
+    Application.belongsTo(models.JobPostModel, { foreignKey: "job_post_id" });
   }
 }
 

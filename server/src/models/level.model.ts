@@ -28,8 +28,8 @@ class Level
 
   // Define associations
   public static associate(models: any) {
-    Level.belongsToMany(models.JobPost, {
-      through: models.JobPostLevel,
+    Level.belongsToMany(models.JobPostModel, {
+      through: models.JobPostLevelModel,
       foreignKey: "level_id",
       otherKey: "job_post_id",
     });

@@ -28,7 +28,7 @@ class JobCategory
 
   // Define associations
   public static associate(models: any) {
-    JobCategory.hasMany(models.JobPost, { foreignKey: "category_id" });
+    JobCategory.hasMany(models.JobPostModel, { foreignKey: "category_id" });
   }
 }
 

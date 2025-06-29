@@ -2,7 +2,7 @@ import models from "../models";
 
 export const getProvinces = async () => {
   try {
-    const provinces = await models.Province.findAll();
+    const provinces = await models.ProvinceModel.findAll();
     return provinces;
   } catch (error) {
     console.log(error);
@@ -12,7 +12,7 @@ export const getProvinces = async () => {
 
 export const getDistricts = async (provinceId: number) => {
   try {
-    const districts = await models.District.findAll({
+    const districts = await models.DistrictModel.findAll({
       where: { province_id: provinceId },
     });
     return districts;

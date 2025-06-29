@@ -31,7 +31,7 @@ class Admin
   // Define associations
   public static associate(models: any) {
     // Admin associations if needed
-    Admin.hasMany(models.Token, { foreignKey: "admin_id" });
+    Admin.hasMany(models.TokenModel, { foreignKey: "admin_id" });
   }
 }
 

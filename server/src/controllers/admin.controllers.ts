@@ -1,4 +1,4 @@
-import * as adminServices from "../services/admin.services";
+import { adminServices } from "../services/admin.services";
 import { Request, Response } from "express";
 
 export const register = async (req: Request, res: Response): Promise<void> => {

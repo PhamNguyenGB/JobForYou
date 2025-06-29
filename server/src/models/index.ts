@@ -1,6 +1,5 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import axios from "axios";
 dotenv.config();
 
 import userModel from "./user.model";
@@ -35,36 +34,36 @@ export const sequelize = new Sequelize(
   }
 );
 
-const User = userModel(sequelize);
-const Admin = adminModel(sequelize);
-const Application = applicationModel(sequelize);
-const Company = companyModel(sequelize);
-const District = districtModel(sequelize);
-const JobCategory = jobCategoryModel(sequelize);
-const JobPostDistrict = jobPostDistrictModel(sequelize);
-const JobPost = jobPostModel(sequelize);
-const JobPostLevel = jobPostLevelModel(sequelize);
-const Level = levelModel(sequelize);
-const SavedJob = savedJobModel(sequelize);
-const Profile = profileModel(sequelize);
-const Province = provinceModel(sequelize);
-const Token = tokenModel(sequelize);
+const UserModel = userModel(sequelize);
+const AdminModel = adminModel(sequelize);
+const ApplicationModel = applicationModel(sequelize);
+const CompanyModel = companyModel(sequelize);
+const DistrictModel = districtModel(sequelize);
+const JobCategoryModel = jobCategoryModel(sequelize);
+const JobPostDistrictModel = jobPostDistrictModel(sequelize);
+const JobPostModel = jobPostModel(sequelize);
+const JobPostLevelModel = jobPostLevelModel(sequelize);
+const LevelModel = levelModel(sequelize);
+const SavedJobModel = savedJobModel(sequelize);
+const ProfileModel = profileModel(sequelize);
+const ProvinceModel = provinceModel(sequelize);
+const TokenModel = tokenModel(sequelize);
 
 const models = {
-  User,
-  Admin,
-  Application,
-  Company,
-  District,
-  JobCategory,
-  JobPostDistrict,
-  JobPost,
-  JobPostLevel,
-  Level,
-  SavedJob,
-  Profile,
-  Province,
-  Token,
+  UserModel,
+  AdminModel,
+  ApplicationModel,
+  CompanyModel,
+  DistrictModel,
+  JobCategoryModel,
+  JobPostDistrictModel,
+  JobPostModel,
+  JobPostLevelModel,
+  LevelModel,
+  SavedJobModel,
+  ProfileModel,
+  ProvinceModel,
+  TokenModel,
 };
 
 Object.values(models).forEach((model: any) => {

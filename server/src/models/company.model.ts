@@ -38,8 +38,8 @@ class Company
 
   // Define associations
   public static associate(models: any) {
-    Company.belongsTo(models.Admin, { foreignKey: "admin_id" });
-    Company.hasMany(models.JobPost, { foreignKey: "company_id" });
+    Company.belongsTo(models.AdminModel, { foreignKey: "admin_id" });
+    Company.hasMany(models.JobPostModel, { foreignKey: "company_id" });
   }
 }
 

@@ -11,7 +11,7 @@ interface ApplicationAttributes {
 
 export const createApplication = async (payload: ApplicationAttributes) => {
   try {
-    const application = await models.Application.create({
+    const application = await models.ApplicationModel.create({
       ...payload,
       status: "pending",
     });
@@ -28,7 +28,7 @@ export const getApplicationByUserId = async (
 ) => {
   try {
     let offset = (page - 1) * limit;
-    const application = await models.Application.findAll({
+    const application = await models.ApplicationModel.findAll({
       offset: offset,
       limit: limit,
       where: { user_id: userId },
@@ -46,7 +46,7 @@ export const getApplicationByJobPostId = async (
 ) => {
   try {
     let offset = (page - 1) * limit;
-    const application = await models.Application.findAll({
+    const application = await models.ApplicationModel.findAll({
       offset: offset,
       limit: limit,
       where: { job_post_id: jobPostId },

@@ -28,10 +28,10 @@ class JobPostLevel
 
   // Define associations
   public static associate(models: any) {
-    JobPostLevel.belongsTo(models.JobPost, {
+    JobPostLevel.belongsTo(models.JobPostModel, {
       foreignKey: "job_post_id",
     });
-    JobPostLevel.belongsTo(models.Level, {
+    JobPostLevel.belongsTo(models.LevelModel, {
       foreignKey: "level_id",
     });
   }

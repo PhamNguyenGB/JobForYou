@@ -26,7 +26,7 @@ class Province
 
   // Define associations
   public static associate(models: any) {
-    Province.hasMany(models.District, {
+    Province.hasMany(models.DistrictModel, {
       foreignKey: "province_id",
     });
   }

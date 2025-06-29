@@ -31,11 +31,11 @@ class JobPostDistrict
 
   // Define associations
   public static associate(models: any) {
-    JobPostDistrict.belongsTo(models.JobPost, {
+    JobPostDistrict.belongsTo(models.JobPostModel, {
       foreignKey: "job_post_id",
       as: "jobPost",
     });
-    JobPostDistrict.belongsTo(models.District, {
+    JobPostDistrict.belongsTo(models.DistrictModel, {
       foreignKey: "district_id",
       as: "district",
     });

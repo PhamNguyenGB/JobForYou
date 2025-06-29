@@ -6,7 +6,7 @@ export const createJobPostDistrict = async (
 ) => {
   try {
     for (let i = 0; i < districtId.length; i++) {
-      await models.JobPostDistrict.create({
+      await models.JobPostDistrictModel.create({
         job_post_id: jobPostId,
         district_id: districtId[i],
       });
@@ -24,7 +24,7 @@ export const deleteJobPostDistrict = async (
 ) => {
   try {
     for (let i = 0; i < districtId.length; i++) {
-      await models.JobPostDistrict.destroy({
+      await models.JobPostDistrictModel.destroy({
         where: { job_post_id: jobPostId, district_id: districtId[i] },
       });
     }

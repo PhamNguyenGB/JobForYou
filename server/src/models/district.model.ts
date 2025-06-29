@@ -28,9 +28,9 @@ class District
 
   // Define associations
   public static associate(models: any) {
-    District.belongsTo(models.Province, { foreignKey: "province_id" });
-    District.belongsToMany(models.JobPost, {
-      through: models.JobPostDistrict,
+    District.belongsTo(models.ProvinceModel, { foreignKey: "province_id" });
+    District.belongsToMany(models.JobPostModel, {
+      through: models.JobPostDistrictModel,
       foreignKey: "district_id",
       otherKey: "job_post_id",
     });

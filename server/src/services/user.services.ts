@@ -11,7 +11,7 @@ interface infoUser {
 
 export const getYourInfo = (userId: number) => {
   try {
-    const user = models.User.findOne({ where: { id: userId } });
+    const user = models.UserModel.findOne({ where: { id: userId } });
     if (user) {
       return user;
     }
@@ -24,7 +24,7 @@ export const getYourInfo = (userId: number) => {
 
 export const updateUserInfo = async (payload: infoUser) => {
   try {
-    const user = await models.User.findOne({ where: { id: payload.id } });
+    const user = await models.UserModel.findOne({ where: { id: payload.id } });
     if (user) {
       if (payload.passOld && payload.passNew) {
         const isMatch = bcrypt.compareSync(payload.passOld, user.password);

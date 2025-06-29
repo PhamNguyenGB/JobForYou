@@ -36,8 +36,8 @@ class Token
 
   // Define associations
   public static associate(models: any) {
-    Token.belongsTo(models.User, { foreignKey: "user_id" });
-    Token.belongsTo(models.Admin, { foreignKey: "admin_id" });
+    Token.belongsTo(models.UserModel, { foreignKey: "user_id" });
+    Token.belongsTo(models.AdminModel, { foreignKey: "admin_id" });
   }
 }
 

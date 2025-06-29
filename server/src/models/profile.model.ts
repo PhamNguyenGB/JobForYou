@@ -32,7 +32,7 @@ class Profile
 
   // Define associations
   public static associate(models: any) {
-    Profile.belongsTo(models.User, { foreignKey: "user_id" });
+    Profile.belongsTo(models.UserModel, { foreignKey: "user_id" });
   }
 }
 

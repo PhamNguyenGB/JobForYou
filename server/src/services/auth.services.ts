@@ -46,7 +46,7 @@ const funHashPassWord = (password: string) => {
 const checkEmail = async (email: string) => {
   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
   if (emailReg.test(String(email).toLowerCase()) === true) {
-    let user = await models.User.findOne({
+    let user = await models.UserModel.findOne({
       where: { email: email },
     });
     if (user) {
@@ -67,7 +67,10 @@ export const registerUser = async (payload: UserAttributes) => {
       return;
     }
     let hashPass = await funHashPassWord(payload.password);
-    const user = await models.User.create({ ...payload, password: hashPass });
+    const user = await models.UserModel.create({
+      ...payload,
+      password: hashPass,
+    });
     return user;
   } catch (error) {
     console.log(error);
@@ -77,7 +80,7 @@ export const registerUser = async (payload: UserAttributes) => {
 
 export const loginUser = async (email: string, password: string) => {
   try {
-    const user = await models.User.findOne({
+    const user = await models.UserModel.findOne({
       where: { email: email },
     });
     if (user) {
@@ -162,7 +165,7 @@ export const generateRefreshToken = async (
 
 export const createToken = async (payload: TokenAttributes) => {
   try {
-    await models.Token.create({
+    await models.TokenModel.create({
       user_id: payload.user_id,
       admin_id: payload.admin_id,
       refresh_token: payload.refresh_token,
@@ -178,7 +181,7 @@ export const createToken = async (payload: TokenAttributes) => {
 
 export const refreshAccessToken = async (refreshToken: string) => {
   try {
-    const token = await models.Token.findOne({
+    const token = await models.TokenModel.findOne({
       where: { refresh_token: refreshToken },
     });
     if (token) {
@@ -187,12 +190,12 @@ export const refreshAccessToken = async (refreshToken: string) => {
         let userPhone;
         let userRole;
         if (token.type === "user") {
-          userOrAdmin = await models.User.findByPk(token.user_id);
+          userOrAdmin = await models.UserModel.findByPk(token.user_id);
           if (userOrAdmin) {
             userPhone = userOrAdmin.phone;
             userRole = userOrAdmin.role;
           }
-        } else userOrAdmin = await models.Admin.findByPk(token.admin_id);
+        } else userOrAdmin = await models.AdminModel.findByPk(token.admin_id);
 
         if (!userOrAdmin) return null;
 
@@ -219,7 +222,7 @@ export const refreshAccessToken = async (refreshToken: string) => {
 
 export const logoutUser = async (refresh_token: string) => {
   try {
-    await models.Token.update(
+    await models.TokenModel.update(
       { is_revoked: true },
       { where: { refresh_token } }
     );
