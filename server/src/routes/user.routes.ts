@@ -1,10 +1,11 @@
 import express, { Express } from "express";
-import * as userController from "../controllers/user.controllers";
+import userController from "../controllers/user.controllers";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
-
+import { validate } from "../middlewares/validateSchema.middleware";
+import { updateUserSchema } from "../validations/user.schema";
 const router = express.Router();
 
 const UserRoute = (app: Express) => {
@@ -14,7 +15,13 @@ const UserRoute = (app: Express) => {
     authorizeRoles("user", "employer"),
     userController.getUserInfo
   );
-  router.put("/update-user-info", userController.updateUserInfo);
+  router.put(
+    "/update-user-info",
+    validate(updateUserSchema),
+    authenticateToken,
+    authorizeRoles("user", "employer"),
+    userController.updateUserInfo
+  );
 
   return app.use("/api/users", router);
 };

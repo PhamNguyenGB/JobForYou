@@ -1,43 +1,37 @@
-import models from "../models";
+import { LevelDto } from "../types/level.types";
+import levelRepo from "../repo/level.repo";
 
-interface LevelAttributes {
-  id: number;
-  name: string;
-  description?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+export class LevelServices {
+  getAllLevels = async () => {
+    try {
+      const levels = await levelRepo.getAllLevels();
+      return levels;
+    } catch (error) {
+      console.error("Error getting all levels:", error);
+      throw error;
+    }
+  };
+
+  create = async (payload: LevelDto) => {
+    try {
+      const level = await levelRepo.createJobPostLevel(payload);
+      return level;
+    } catch (error) {
+      console.error("Error creating level:", error);
+      throw error;
+    }
+  };
+
+  deleteLevel = async (id: number) => {
+    try {
+      const level = await levelRepo.deleteLevel(id);
+      return level;
+    } catch (error) {
+      console.error("Error deleting level:", error);
+      throw error;
+    }
+  };
 }
 
-export const getAllLevels = async () => {
-  try {
-    const levels = await models.LevelModel.findAll();
-    return levels;
-  } catch (error) {
-    console.error("Error getting all levels:", error);
-    throw error;
-  }
-};
-
-export const create = async (payload: LevelAttributes) => {
-  try {
-    const level = await models.LevelModel.create(payload);
-    return level;
-  } catch (error) {
-    console.error("Error creating level:", error);
-    throw error;
-  }
-};
-
-export const deleteLevel = async (id: number) => {
-  try {
-    const level = await models.LevelModel.findByPk(id);
-    if (!level) {
-      throw new Error("Level not found");
-    }
-    await level.destroy();
-    return "Level deleted successfully";
-  } catch (error) {
-    console.error("Error deleting level:", error);
-    throw error;
-  }
-};
+const levelServices = new LevelServices();
+export default levelServices;

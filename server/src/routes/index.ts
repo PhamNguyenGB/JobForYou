@@ -8,6 +8,7 @@ import JobCategoryRoute from "./jobCategory.routes";
 import LevelRoute from "./level.routes";
 import JobPostRoute from "./jobPost.routes";
 import JobPostLevelRoute from "./jobPostLevel.routes";
+import ApplicationRoute from "./application.routes";
 const routes = (app: Express) => {
   AuthRoute(app);
   AdminRoute(app);
@@ -18,6 +19,7 @@ const routes = (app: Express) => {
   LevelRoute(app);
   JobPostRoute(app);
   JobPostLevelRoute(app);
+  ApplicationRoute(app);
 };
 
 export default routes;

@@ -1,91 +1,57 @@
-import models from "../models";
+import { CompanyDto } from "../types/company.types";
+import companyRepo from "../repo/company.repo";
 
-interface CompanyAttributes {
-  name: string;
-  description?: string;
-  address?: string;
-  avatar?: string;
-  link_website?: string;
-  members?: string;
-  admin_id?: number;
+export class CompanyServices {
+  createCompany = async (companyData: CompanyDto) => {
+    try {
+      const company = await companyRepo.createCompany(companyData);
+      return company;
+    } catch (error) {
+      console.error("Error creating company:", error);
+      throw error;
+    }
+  };
+
+  getCompanyById = async (companyId: number) => {
+    try {
+      const company = await companyRepo.findCompanyById(companyId);
+      return company;
+    } catch (error) {
+      console.error("Error getting company:", error);
+      throw error;
+    }
+  };
+
+  getAllCompanies = async () => {
+    try {
+      const companies = await companyRepo.findAllCompanies();
+      return companies;
+    } catch (error) {
+      console.error("Error getting all companies:", error);
+      throw error;
+    }
+  };
+
+  updateCompany = async (companyId: number, companyData: CompanyDto) => {
+    try {
+      const company = await companyRepo.updateCompany(companyId, companyData);
+      return company;
+    } catch (error) {
+      console.error("Error updating company:", error);
+      throw error;
+    }
+  };
+
+  deleteCompany = async (companyId: number) => {
+    try {
+      await companyRepo.deleteCompany(companyId);
+      return "Company deleted successfully";
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      throw error;
+    }
+  };
 }
 
-export const createCompany = async (companyData: CompanyAttributes) => {
-  try {
-    console.log("check company data", companyData);
-
-    const company = await models.CompanyModel.create(companyData);
-    return company;
-  } catch (error) {
-    console.error("Error creating company:", error);
-    throw error;
-  }
-};
-
-export const getCompanyById = async (companyId: number) => {
-  try {
-    const company = await models.CompanyModel.findByPk(companyId);
-    return company;
-  } catch (error) {
-    console.error("Error getting company:", error);
-    throw error;
-  }
-};
-
-export const getAllCompanies = async () => {
-  try {
-    const companies = await models.CompanyModel.findAll();
-    return companies;
-  } catch (error) {
-    console.error("Error getting all companies:", error);
-    throw error;
-  }
-};
-
-export const updateCompany = async (
-  companyId: number,
-  companyData: CompanyAttributes
-) => {
-  try {
-    console.log("check company data", companyData, companyId);
-
-    const company = await models.CompanyModel.findOne({
-      where: { id: companyId },
-    });
-    console.log("check company", company);
-
-    if (!company) {
-      throw new Error("Company not found");
-    }
-    await company.update({
-      name: companyData.name ? companyData.name : company.name,
-      description: companyData.description
-        ? companyData.description
-        : company.description,
-      address: companyData.address ? companyData.address : company.address,
-      avatar: companyData.avatar ? companyData.avatar : company.avatar,
-      link_website: companyData.link_website
-        ? companyData.link_website
-        : company.link_website,
-      members: companyData.members ? companyData.members : company.members,
-    });
-    return company;
-  } catch (error) {
-    console.error("Error updating company:", error);
-    throw error;
-  }
-};
-
-export const deleteCompany = async (companyId: number) => {
-  try {
-    const company = await models.CompanyModel.findByPk(companyId);
-    if (!company) {
-      throw new Error("Company not found");
-    }
-    await company.destroy();
-    return "Company deleted successfully";
-  } catch (error) {
-    console.error("Error deleting company:", error);
-    throw error;
-  }
-};
+const companyServices = new CompanyServices();
+export default companyServices;

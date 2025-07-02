@@ -1,40 +1,32 @@
-import models from "../models";
+import jobPostLevelRepo from "../repo/jobPostLevel.repo";
 
-export const createJobPostLevel = async (
-  jobPostId: number,
-  levelId: number[]
-) => {
-  try {
-    for (let i = 0; i < levelId.length; i++) {
-      await models.JobPostLevelModel.create({
-        job_post_id: jobPostId,
-        level_id: levelId[i],
-      });
+export class JobPostLevelServices {
+  createJobPostLevel = async (jobPostId: number, levelId: number[]) => {
+    try {
+      const jobPostLevel = await jobPostLevelRepo.createJobPostLevel(
+        jobPostId,
+        levelId
+      );
+      return jobPostLevel;
+    } catch (error) {
+      console.log(error);
+      return;
     }
+  };
 
-    return "JobPostLevel created successfully";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
-export const deleteJobPostLevel = async (
-  jobPostId: number,
-  levelId: number[]
-) => {
-  try {
-    for (let i = 0; i < levelId.length; i++) {
-      await models.JobPostLevelModel.destroy({
-        where: { job_post_id: jobPostId, level_id: levelId[i] },
-      });
+  deleteJobPostLevel = async (jobPostId: number, levelId: number[]) => {
+    try {
+      const jobPostLevel = await jobPostLevelRepo.deleteJobPostLevel(
+        jobPostId,
+        levelId
+      );
+      return jobPostLevel;
+    } catch (error) {
+      console.log(error);
+      return;
     }
-    await models.JobPostLevelModel.destroy({
-      where: { job_post_id: jobPostId, level_id: levelId },
-    });
-    return "JobPostLevel deleted successfully";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  };
+}
+
+const jobPostLevelServices = new JobPostLevelServices();
+export default jobPostLevelServices;

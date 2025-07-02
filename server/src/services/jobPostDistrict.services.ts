@@ -1,36 +1,33 @@
 import models from "../models";
+import jobPostDistrictRepo from "../repo/jobPostDistrict.repo";
 
-export const createJobPostDistrict = async (
-  jobPostId: number,
-  districtId: number[]
-) => {
-  try {
-    for (let i = 0; i < districtId.length; i++) {
-      await models.JobPostDistrictModel.create({
-        job_post_id: jobPostId,
-        district_id: districtId[i],
-      });
+export class JobPostDistrictServices {
+  createJobPostDistrict = async (jobPostId: number, districtId: number[]) => {
+    try {
+      const jobPostDistrict = await jobPostDistrictRepo.createJobPostDistrict(
+        jobPostId,
+        districtId
+      );
+      return jobPostDistrict;
+    } catch (error) {
+      console.log(error);
+      return;
     }
-    return "JobPostDistrict created successfully";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  };
 
-export const deleteJobPostDistrict = async (
-  jobPostId: number,
-  districtId: number[]
-) => {
-  try {
-    for (let i = 0; i < districtId.length; i++) {
-      await models.JobPostDistrictModel.destroy({
-        where: { job_post_id: jobPostId, district_id: districtId[i] },
-      });
+  deleteJobPostDistrict = async (jobPostId: number, districtId: number[]) => {
+    try {
+      const jobPostDistrict = await jobPostDistrictRepo.deleteJobPostDistrict(
+        jobPostId,
+        districtId
+      );
+      return jobPostDistrict;
+    } catch (error) {
+      console.log(error);
+      return;
     }
-    return "JobPostDistrict deleted successfully";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  };
+}
+
+const jobPostDistrictServices = new JobPostDistrictServices();
+export default jobPostDistrictServices;

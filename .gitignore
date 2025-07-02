@@ -4,4 +4,4 @@ dist/
 build/
 api_endpont.txt
 **/config.json
-
+package-lock.json

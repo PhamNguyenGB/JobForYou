@@ -1,108 +1,60 @@
-import models from "../models";
+import { JobPostDto } from "../types/jobPost.types";
+import jobPostRepo from "../repo/jobPost.repo";
 
-interface JobPostAttributes {
-  id?: number;
-  company_id: number;
-  title: string;
-  description: string;
-  salary?: string;
-  benefits?: string;
-  deadline: Date;
-  skills?: string;
-  education?: string;
-  quantity?: number;
-  status: string;
-  user_id?: number;
-  category_id?: number;
+export class JobPostServices {
+  createJobPost = async (payload: JobPostDto) => {
+    try {
+      const jobPost = await jobPostRepo.createJobPost({
+        ...payload,
+        status: "published",
+      });
+      return jobPost;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  getJobPost = async (page: number, limit: number) => {
+    try {
+      const jobPosts = await jobPostRepo.getAllJobPosts(page, limit);
+      return jobPosts;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  getJobPostById = async (jobPostId: number) => {
+    try {
+      const jobPost = await jobPostRepo.getJobPostById(jobPostId);
+      return jobPost;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  updateJobPost = async (jobPostId: number, payload: JobPostDto) => {
+    try {
+      const jobPost = await jobPostRepo.updateJobPost(jobPostId, payload);
+      return jobPost;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  deleteJobPost = async (jobPostId: number, userId: number) => {
+    try {
+      const jobPost = await jobPostRepo.deleteJobPost(jobPostId, userId);
+      return jobPost;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
 }
 
-export const createJobPost = async (payload: JobPostAttributes) => {
-  try {
-    const jobPost = await models.JobPostModel.create({
-      ...payload,
-      status: "published",
-    });
-    return jobPost;
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
-export const getJobPost = async (page: number, limit: number) => {
-  try {
-    let offset = (page - 1) * limit;
-    const jobPosts = await models.JobPostModel.findAll({
-      offset: offset,
-      limit: limit,
-      include: [{ model: models.CompanyModel }, { model: models.UserModel }],
-    });
-    return jobPosts;
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
-export const getJobPostById = async (jobPostId: number) => {
-  try {
-    const jobPost = await models.JobPostModel.findOne({
-      where: { id: jobPostId },
-      include: [{ model: models.CompanyModel }, { model: models.UserModel }],
-    });
-    return jobPost;
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
-export const updateJobPost = async (
-  jobPostId: number,
-  payload: JobPostAttributes
-) => {
-  try {
-    const jobPost = await models.JobPostModel.findOne({
-      where: { id: jobPostId },
-    });
-    if (jobPost) {
-      const jobPostUpdate = await jobPost.update({
-        title: payload.title ? payload.title : jobPost.title,
-        description: payload.description
-          ? payload.description
-          : jobPost.description,
-        salary: payload.salary ? payload.salary : jobPost.salary,
-        benefits: payload.benefits ? payload.benefits : jobPost.benefits,
-        deadline: payload.deadline ? payload.deadline : jobPost.deadline,
-        skills: payload.skills ? payload.skills : jobPost.skills,
-        education: payload.education ? payload.education : jobPost.education,
-        quantity: payload.quantity ? payload.quantity : jobPost.quantity,
-        status: payload.status ? payload.status : jobPost.status,
-      });
-      return jobPostUpdate;
-    }
-    return "JobPost not found";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
-
-export const deleteJobPost = async (jobPostId: number, userId: number) => {
-  try {
-    const jobPost = await models.JobPostModel.findOne({
-      where: { id: jobPostId },
-    });
-    if (jobPost) {
-      if (jobPost.user_id === userId) {
-        const jobPostDelete = await jobPost.destroy();
-        return "JobPost deleted successfully";
-      }
-      return "You can't delete this job post";
-    }
-    return "JobPost not found";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+const jobPostServices = new JobPostServices();
+export default jobPostServices;

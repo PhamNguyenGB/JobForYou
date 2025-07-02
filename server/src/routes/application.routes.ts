@@ -1,9 +1,12 @@
-import * as applicationController from "../controllers/application.controllers";
+import applicationController from "../controllers/application.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
+import upload from "../middlewares/uploadFile.middleware";
+import { validate } from "../middlewares/validateSchema.middleware";
+import { createApplicationSchema } from "../validations/application.schema";
 
 const router = express.Router();
 
@@ -12,6 +15,8 @@ const ApplicationRoute = (app: Express) => {
     "/apply",
     authenticateToken,
     authorizeRoles("user"),
+    validate(createApplicationSchema),
+    upload.single("file_cv"),
     applicationController.createApplication
   );
   router.get(

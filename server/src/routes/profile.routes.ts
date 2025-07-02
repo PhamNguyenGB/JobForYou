@@ -3,8 +3,10 @@ import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
-import * as profileController from "../controllers/profile.controllers";
+import profileController from "../controllers/profile.controllers";
 import upload from "../middlewares/uploadFile.middleware";
+import { validate } from "../middlewares/validateSchema.middleware";
+import { createProfileSchema } from "../validations/profile.schema";
 
 const router = express.Router();
 
@@ -26,6 +28,7 @@ const ProfileRoute = (app: Express) => {
     "/create-profile",
     authenticateToken,
     authorizeRoles("user"),
+    validate(createProfileSchema),
     upload.single("cv_file"),
     profileController.createProfile
   );

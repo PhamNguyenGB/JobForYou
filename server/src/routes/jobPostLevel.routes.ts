@@ -1,4 +1,4 @@
-import * as jobPostLevelController from "../controllers/jobPostLevel.controllers";
+import jobPostLevelController from "../controllers/jobPostLevel.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,

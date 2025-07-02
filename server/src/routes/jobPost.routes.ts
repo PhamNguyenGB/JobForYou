@@ -1,9 +1,11 @@
-import * as jobPostControllers from "../controllers/jobPost.controllers";
+import jobPostControllers from "../controllers/jobPost.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
+import { validate } from "../middlewares/validateSchema.middleware";
+import { createJobPostSchema } from "../validations/jobPost.schema";
 
 const router = express.Router();
 
@@ -14,6 +16,7 @@ const JobPostRoute = (app: Express) => {
     "/create",
     authenticateToken,
     authorizeRoles("employer"),
+    validate(createJobPostSchema),
     jobPostControllers.createJobPost
   );
   router.put("/update/:id", jobPostControllers.updateJobPost);

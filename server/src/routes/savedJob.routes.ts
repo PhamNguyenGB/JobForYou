@@ -1,4 +1,4 @@
-import * as savedJobController from "../controllers/savedJob.controllers";
+import savedJobController from "../controllers/savedJob.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,

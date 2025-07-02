@@ -9,11 +9,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/files_cv", express.static("src/assets/files_cv"));
 
-// app.get("/users", async (req, res) => {
-//   const users = await User.findAll();
-//   res.json(users);
-// });
-
 routes(app);
 
 sequelize.sync().then(() => {

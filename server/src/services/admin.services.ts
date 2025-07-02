@@ -1,53 +1,13 @@
-import models from "../models";
-import { adminRepo } from "../repo/admin.repo";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-  createToken,
-} from "./auth.services";
+import adminRepo from "../repo/admin.repo";
+import authService from "./auth.services";
 import { funHashPassWord, funComparePassWord } from "../utils/bcrypt.util";
-import {
-  AdminAttributes,
-  CreateAdminPayload,
-  UpdateAdminPayload,
-} from "../types/admin.type";
-
-interface TokenAttributes {
-  id?: number;
-  user_id?: number;
-  admin_id?: number;
-  refresh_token: string;
-  type: string;
-  is_revoked: boolean;
-  expires_at: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-// const checkEmail = async (email: string) => {
-//   const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-//   if (emailReg.test(String(email).toLowerCase()) === true) {
-//     let user = await models.UserModel.findOne({
-//       where: { email: email },
-//     });
-//     if (user) {
-//       return "email is exist";
-//     }
-//     return true;
-//   }
-
-//   return "email is not valid";
-// };
+import { AdminDTO, AdminCreateDto, AdminUpdateDto } from "../types/admin.types";
+import { TokenDto } from "../types/token.types";
+import tokenRepo from "../repo/token.repo";
 
 export class AdminService {
-  async registerAdmin(payload: CreateAdminPayload) {
+  async registerAdmin(payload: AdminCreateDto) {
     try {
-      // let email = await checkEmail(payload.email);
-
-      // if (email !== true) {
-      //   console.log(email);
-      //   return;
-      // }
       let hashPass = await funHashPassWord(payload.password);
       const admin = await adminRepo.createAdmin({
         ...payload,
@@ -62,25 +22,25 @@ export class AdminService {
 
   async loginAdmin(email: string, password: string) {
     try {
-      const admin = await models.AdminModel.findOne({
-        where: { email: email },
-      });
+      const admin = await adminRepo.getAdminByEmail(email);
       if (admin) {
         if (funComparePassWord(password, admin.password)) {
-          const payload: Omit<AdminAttributes, "password"> = {
+          const payload: Omit<AdminDTO, "password"> = {
             name: admin.name,
             email: admin.email,
             id: admin.id,
             role: "admin",
           };
-          const token = await generateAccessToken(payload);
-          const refresh_token = (await generateRefreshToken(payload)) as string;
+          const token = await authService.generateAccessToken(payload);
+          const refresh_token = (await authService.generateRefreshToken(
+            payload
+          )) as string;
 
           const expiresAt = new Date(
             Date.now() + 1000 * Number(process.env.JWT_EXPIRES_REFRESH_IN)
           );
 
-          const dataToken: TokenAttributes = {
+          const dataToken: TokenDto = {
             user_id: undefined,
             admin_id: admin.id,
             refresh_token: refresh_token,
@@ -88,7 +48,7 @@ export class AdminService {
             is_revoked: false,
             expires_at: expiresAt,
           };
-          await createToken(dataToken);
+          await authService.createToken(dataToken);
           return { token, refresh_token, admin };
         }
       }
@@ -100,10 +60,7 @@ export class AdminService {
 
   async logoutAdmin(refresh_token: string) {
     try {
-      await models.TokenModel.update(
-        { is_revoked: true },
-        { where: { refresh_token } }
-      );
+      await tokenRepo.updateToken(refresh_token);
       return "logout success";
     } catch (error) {
       console.log(error);
@@ -112,4 +69,5 @@ export class AdminService {
   }
 }
 
-export const adminServices = new AdminService();
+const adminServices = new AdminService();
+export default adminServices;

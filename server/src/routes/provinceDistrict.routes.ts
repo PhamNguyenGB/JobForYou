@@ -1,9 +1,5 @@
-import * as provinceDistrictController from "../controllers/provinceDistrict.controllers";
+import provinceDistrictController from "../controllers/provinceDistrict.controllers";
 import express, { Express } from "express";
-import {
-  authenticateToken,
-  authorizeRoles,
-} from "../middlewares/auth.middlewares";
 
 const router = express.Router();
 

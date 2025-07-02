@@ -1,9 +1,11 @@
-import * as levelController from "../controllers/level.controllers";
+import levelController from "../controllers/level.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
+import { validate } from "../middlewares/validateSchema.middleware";
+import { createLevelSchema } from "../validations/level.schema";
 
 const router = express.Router();
 
@@ -13,6 +15,7 @@ const LevelRoute = (app: Express) => {
     "/create",
     authenticateToken,
     authorizeRoles("employer", "admin"),
+    validate(createLevelSchema),
     levelController.createLevel
   );
   router.delete(

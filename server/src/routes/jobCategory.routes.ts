@@ -1,9 +1,11 @@
-import * as jobCategoryController from "../controllers/jobCategory.controllers";
+import jobCategoryController from "../controllers/jobCategory.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
+import { validate } from "../middlewares/validateSchema.middleware";
+import { createJobCategorySchema } from "../validations/jobCategory.schema";
 
 const router = express.Router();
 
@@ -14,6 +16,7 @@ const JobCategoryRoute = (app: Express) => {
     "/create",
     authenticateToken,
     authorizeRoles("employer"),
+    validate(createJobCategorySchema),
     jobCategoryController.createJobCategory
   );
   router.delete(

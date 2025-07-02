@@ -1,10 +1,11 @@
-import * as companyController from "../controllers/company.controllers";
+import companyController from "../controllers/company.controllers";
 import express, { Express } from "express";
 import {
   authenticateToken,
   authorizeRoles,
 } from "../middlewares/auth.middlewares";
-
+import { createTokenSchema } from "../validations/company.schema";
+import { validate } from "../middlewares/validateSchema.middleware";
 const router = express.Router();
 
 const CompanyRoute = (app: Express) => {
@@ -19,6 +20,7 @@ const CompanyRoute = (app: Express) => {
     "/create",
     authenticateToken,
     authorizeRoles("employer"),
+    validate(createTokenSchema),
     companyController.createCompany
   );
   router.put(

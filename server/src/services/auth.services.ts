@@ -1,226 +1,179 @@
-import models from "../models";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { AdminAttributes } from "../types/admin.type";
+import { AdminDTO } from "../types/admin.types";
+import { TokenDto } from "../types/token.types";
+import { UserDto, UserCreateDto } from "../types/user.types";
+import userRepo from "../repo/user.repo";
+import { funHashPassWord, funComparePassWord } from "../utils/bcrypt.util";
+import adminRepo from "../repo/admin.repo";
+import tokenRepo from "../repo/token.repo";
 
 require("dotenv").config();
 
-interface UserAttributes {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  phone?: string;
-  role?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface TokenAttributes {
-  id?: number;
-  user_id?: number;
-  admin_id?: number;
-  refresh_token: string;
-  type: string;
-  is_revoked: boolean;
-  expires_at: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-const salt = bcrypt.genSaltSync(10);
-
-const funHashPassWord = (password: string) => {
-  let hash = bcrypt.hashSync(password, salt);
-  return hash;
-};
-
-const checkEmail = async (email: string) => {
-  const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  if (emailReg.test(String(email).toLowerCase()) === true) {
-    let user = await models.UserModel.findOne({
-      where: { email: email },
-    });
-    if (user) {
-      return "email is exist";
-    }
-    return true;
-  }
-
-  return "email is not valid";
-};
-
-export const registerUser = async (payload: UserAttributes) => {
-  try {
-    let email = await checkEmail(payload.email);
-
-    if (email !== true) {
-      console.log(email);
+export class AuthService {
+  registerUser = async (payload: UserCreateDto) => {
+    try {
+      let hashPass = await funHashPassWord(payload.password);
+      let data = {
+        ...payload,
+        password: hashPass,
+      };
+      const user = await userRepo.create(data);
+      return user;
+    } catch (error) {
+      console.log(error);
       return;
     }
-    let hashPass = await funHashPassWord(payload.password);
-    const user = await models.UserModel.create({
-      ...payload,
-      password: hashPass,
-    });
-    return user;
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  };
 
-export const loginUser = async (email: string, password: string) => {
-  try {
-    const user = await models.UserModel.findOne({
-      where: { email: email },
-    });
-    if (user) {
-      if (bcrypt.compareSync(password, user.password)) {
-        const payload: Omit<UserAttributes, "password"> = {
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          id: user.id,
-        };
-        const token = await generateAccessToken(payload);
-        const refresh_token = (await generateRefreshToken(payload)) as string;
+  loginUser = async (email: string, password: string) => {
+    try {
+      const user = await userRepo.findUserByEmail(email);
+      if (user) {
+        if (funComparePassWord(password, user.password)) {
+          const payload: Omit<UserDto, "password"> = {
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            id: user.id,
+          };
+          const token = await this.generateAccessToken(payload);
+          const refresh_token = (await this.generateRefreshToken(
+            payload
+          )) as string;
 
-        const expiresAt = new Date(
-          Date.now() + 1000 * Number(process.env.JWT_EXPIRES_REFRESH_IN)
-        );
+          const expiresAt = new Date(
+            Date.now() + 1000 * Number(process.env.JWT_EXPIRES_REFRESH_IN)
+          );
 
-        const dataToken: TokenAttributes = {
-          user_id: user.id,
-          admin_id: undefined,
-          refresh_token: refresh_token,
-          type: "user",
-          is_revoked: false,
-          expires_at: expiresAt,
-        };
-        await createToken(dataToken);
+          const dataToken: TokenDto = {
+            user_id: user.id,
+            admin_id: undefined,
+            refresh_token: refresh_token,
+            type: "user",
+            is_revoked: false,
+            expires_at: expiresAt,
+          };
+          await this.createToken(dataToken);
 
-        const data = {
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          id: user.id,
-          token,
-          refresh_token,
-        };
+          const data = {
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            role: user.role,
+            id: user.id,
+            token,
+            refresh_token,
+          };
 
-        return data;
+          return data;
+        }
       }
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
     }
-    return false;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
+  };
 
-export const generateAccessToken = async (
-  payload: Omit<UserAttributes, "password"> | Omit<AdminAttributes, "password">
-) => {
-  let keyPrivate = process.env.JWT_SECRET as string;
-  let token = null;
-  let exprires_in = Number(process.env.JWT_EXPIRES_IN);
-  try {
-    token = jwt.sign(payload, keyPrivate, {
-      expiresIn: exprires_in,
-    });
-    return token;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
+  generateAccessToken = async (
+    payload: Omit<UserDto, "password"> | Omit<AdminDTO, "password">
+  ) => {
+    let keyPrivate = process.env.JWT_SECRET as string;
+    let token = null;
+    let exprires_in = Number(process.env.JWT_EXPIRES_IN);
+    try {
+      token = jwt.sign(payload, keyPrivate, {
+        expiresIn: exprires_in,
+      });
+      return token;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
 
-export const generateRefreshToken = async (
-  payload: Omit<UserAttributes, "password"> | Omit<AdminAttributes, "password">
-) => {
-  let keyPrivate = process.env.JWT_SECRET_REFRESH as string;
-  let refresh_token = null;
-  let exprires_in = Number(process.env.JWT_EXPIRES_REFRESH_IN);
-  try {
-    refresh_token = jwt.sign(payload, keyPrivate, {
-      expiresIn: exprires_in,
-    });
-    return refresh_token;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-};
+  generateRefreshToken = async (
+    payload: Omit<UserDto, "password"> | Omit<AdminDTO, "password">
+  ) => {
+    let keyPrivate = process.env.JWT_SECRET_REFRESH as string;
+    let refresh_token = null;
+    let exprires_in = Number(process.env.JWT_EXPIRES_REFRESH_IN);
+    try {
+      refresh_token = jwt.sign(payload, keyPrivate, {
+        expiresIn: exprires_in,
+      });
+      return refresh_token;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
 
-export const createToken = async (payload: TokenAttributes) => {
-  try {
-    await models.TokenModel.create({
-      user_id: payload.user_id,
-      admin_id: payload.admin_id,
-      refresh_token: payload.refresh_token,
-      type: payload.type,
-      is_revoked: false,
-      expires_at: payload.expires_at,
-    });
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  createToken = async (payload: TokenDto) => {
+    try {
+      await tokenRepo.createToken({
+        user_id: payload.user_id,
+        admin_id: payload.admin_id,
+        refresh_token: payload.refresh_token,
+        type: payload.type,
+        is_revoked: false,
+        expires_at: payload.expires_at,
+      });
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
 
-export const refreshAccessToken = async (refreshToken: string) => {
-  try {
-    const token = await models.TokenModel.findOne({
-      where: { refresh_token: refreshToken },
-    });
-    if (token) {
-      if (token.is_revoked === false && token.expires_at > new Date()) {
-        let userOrAdmin;
-        let userPhone;
-        let userRole;
-        if (token.type === "user") {
-          userOrAdmin = await models.UserModel.findByPk(token.user_id);
-          if (userOrAdmin) {
-            userPhone = userOrAdmin.phone;
-            userRole = userOrAdmin.role;
-          }
-        } else userOrAdmin = await models.AdminModel.findByPk(token.admin_id);
+  refreshAccessToken = async (refreshToken: string) => {
+    try {
+      const token = await tokenRepo.findOneToken(refreshToken);
+      if (token) {
+        if (token.is_revoked === false && token.expires_at > new Date()) {
+          let userOrAdmin;
+          let userPhone;
+          let userRole;
+          if (token.type === "user") {
+            userOrAdmin = await userRepo.findByPK(token.user_id);
+            if (userOrAdmin) {
+              userPhone = userOrAdmin.phone;
+              userRole = userOrAdmin.role;
+            }
+          } else userOrAdmin = await adminRepo.getAdminById(token.admin_id);
 
-        if (!userOrAdmin) return null;
+          if (!userOrAdmin) return null;
 
-        let payload:
-          | Omit<UserAttributes, "password">
-          | Omit<AdminAttributes, "password"> = {
-          name: userOrAdmin.name,
-          email: userOrAdmin.email,
-          phone: userPhone ? userPhone : "",
-          role: userRole ? userRole : "",
-          id: userOrAdmin.id,
-        };
+          let payload: Omit<UserDto, "password"> | Omit<AdminDTO, "password"> =
+            {
+              name: userOrAdmin.name,
+              email: userOrAdmin.email,
+              phone: userPhone ? userPhone : "",
+              role: userRole ? userRole : "",
+              id: userOrAdmin.id,
+            };
 
-        const accessToken = await generateAccessToken(payload);
-        return accessToken;
+          const accessToken = await this.generateAccessToken(payload);
+          return accessToken;
+        }
       }
+      return "refresh token is not valid";
+    } catch (error) {
+      console.log(error);
+      return;
     }
-    return "refresh token is not valid";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  };
 
-export const logoutUser = async (refresh_token: string) => {
-  try {
-    await models.TokenModel.update(
-      { is_revoked: true },
-      { where: { refresh_token } }
-    );
-    return "logout success";
-  } catch (error) {
-    console.log(error);
-    return;
-  }
-};
+  logoutUser = async (refresh_token: string) => {
+    try {
+      await tokenRepo.updateToken(refresh_token);
+      return "logout success";
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+}
+
+const authService = new AuthService();
+export default authService;

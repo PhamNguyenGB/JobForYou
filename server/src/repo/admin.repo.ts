@@ -1,20 +1,25 @@
 import models from "../models";
-import { createAdminPayload, updateAdminPayload } from "../types/admin.type";
+import { AdminCreateDto, AdminUpdateDto } from "../types/admin.types";
 
 export class AdminRepo {
   async getAllAdmins() {
     return await models.AdminModel.findAll();
   }
 
-  async getAdminById(id: number) {
+  async getAdminById(id: number | undefined) {
+    if (!id) return;
     return await models.AdminModel.findOne({ where: { id: id } });
   }
 
-  async createAdmin(payload: createAdminPayload) {
+  async getAdminByEmail(email: string) {
+    return await models.AdminModel.findOne({ where: { email: email } });
+  }
+
+  async createAdmin(payload: AdminCreateDto) {
     return await models.AdminModel.create(payload);
   }
 
-  async updateAdmin(id: number, payload: updateAdminPayload) {
+  async updateAdmin(id: number, payload: AdminUpdateDto) {
     return await models.AdminModel.update(payload, { where: { id: id } });
   }
 
@@ -23,4 +28,5 @@ export class AdminRepo {
   }
 }
 
-export const adminRepo = new AdminRepo();
+const adminRepo = new AdminRepo();
+export default adminRepo;

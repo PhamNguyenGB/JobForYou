@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import * as adminController from "../controllers/admin.controllers";
+import adminController from "../controllers/admin.controllers";
 import {
   createAdminSchema,
   loginAdminSchema,
